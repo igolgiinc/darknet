@@ -17,6 +17,7 @@ cfg/
 build/darknet/*
 !build/darknet/YoloWrapper.cs
 .fuse*
+darknet
 
 # OS Generated #
 .DS_Store*
@@ -28,3 +29,8 @@ Thumbs.db
 # CMake #
 cmake-build-debug/
 CMakeLists.txt
+
+restd/bin/
+classifyapp_frontend/db.sqlite3
+classifyapp_frontend/*/*.pyc
+classifyapp-rest/venv/

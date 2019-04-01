@@ -11,6 +11,31 @@ void free_layer(layer l)
 #endif
 		return;
 	}
+#ifdef GPU
+#ifdef CUDNN
+	cudnnDestroyTensorDescriptor(l.normTensorDesc);
+	cudnnDestroyTensorDescriptor(l.normDstTensorDesc);
+	cudnnDestroyTensorDescriptor(l.srcTensorDesc);
+	cudnnDestroyTensorDescriptor(l.dstTensorDesc);
+	cudnnDestroyFilterDescriptor(l.weightDesc);
+	cudnnDestroyTensorDescriptor(l.dsrcTensorDesc);
+	cudnnDestroyTensorDescriptor(l.ddstTensorDesc);
+	cudnnDestroyFilterDescriptor(l.dweightDesc);
+	cudnnDestroyConvolutionDescriptor(l.convDesc);
+	cudnnDestroyPoolingDescriptor(l.poolingDesc);
+
+	cudnnDestroyTensorDescriptor(l.normDstTensorDescF16);
+	cudnnDestroyTensorDescriptor(l.srcTensorDesc16);
+	cudnnDestroyTensorDescriptor(l.dstTensorDesc16);
+	cudnnDestroyFilterDescriptor(l.weightDesc16);
+	cudnnDestroyTensorDescriptor(l.dsrcTensorDesc16);
+	cudnnDestroyTensorDescriptor(l.ddstTensorDesc16);
+	cudnnDestroyFilterDescriptor(l.dweightDesc16);
+
+	// cudnnDestroyConvolutionDescriptor(l.convDesc);
+	
+#endif
+#endif	
 	if (l.mask)               free(l.mask);
 	if (l.cweights)           free(l.cweights);
 	if (l.indexes)            free(l.indexes);
@@ -35,6 +60,16 @@ void free_layer(layer l)
 	if (l.weight_updates)     free(l.weight_updates);
     if (l.align_bit_weights)  free(l.align_bit_weights);
     if (l.mean_arr)           free(l.mean_arr);
+#ifdef GPU
+    if (l.delta && l.delta_pinned) {
+        cudaFreeHost(l.delta);
+        l.delta = NULL;
+    }
+    if (l.output && l.output_pinned) {
+        cudaFreeHost(l.output);
+        l.output = NULL;
+    }
+#endif  // GPU
 	if (l.delta)              free(l.delta);
 	if (l.output)             free(l.output);
 	if (l.squared)            free(l.squared);
@@ -54,6 +89,8 @@ void free_layer(layer l)
 	if (l.r_cpu)              free(l.r_cpu);
 	if (l.h_cpu)              free(l.h_cpu);
 	if (l.binary_input)       free(l.binary_input);
+    if (l.bin_re_packed_input) free(l.bin_re_packed_input);
+    if (l.t_bit_input)        free(l.t_bit_input);
     if (l.loss)               free(l.loss);
 
 #ifdef GPU

@@ -1,0 +1,12 @@
+IDIR=include
+ODIR=bin
+SRC=src
+MAKE=make
+CC=gcc
+CPP=g++
+NVCC=nvcc 
+AR=ar
+ARFLAGS=rcs
+INSTALL=install
+DESTDIR=
+prefix=/usr
